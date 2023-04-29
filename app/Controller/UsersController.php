@@ -16,12 +16,12 @@ class UsersController extends AppController {
 
             if($this->Auth->login()) {
 
-	
-				$userid = $this->Auth->user('id');
+				// Update last time login
 				$datenow = date("Y-m-d H:i:s");
-				$data = array('last_login_time' => $datenow);
-				
-				$this->User->id = $userid;
+				$data = array(
+					'id' => $this->Auth->user('id'),
+					'last_login_time' => $datenow
+				);
 
 				if($this->User->save($data)) {
 					return $this->redirect($this->Auth->redirectUrl());
@@ -35,6 +35,7 @@ class UsersController extends AppController {
 		$this->redirect($this->Auth->logout());
 	}
 
+	// Register
 	public function create() {
 
 		if($this->request->is('post')) {
@@ -55,21 +56,27 @@ class UsersController extends AppController {
 					'created_ip' => $ip
 				);
 
+				if($this->User->save($data)) {	
 
-				$user_data['User'] = $data;
-				$this->User->clear();
-				$this->User->set($user_data);
-
-				if($this->User->save()) {	
-
-					$latest_user_saved = $this->User->read(null, $this->User->id);
-					$latest_user_data = array(
-						'id' => $latest_user_saved['User']['id'],
-						'email' => $latest_user_saved['User']['email'],
-						'name' => $latest_user_saved['User']['name']
+					$get_data = $this->User->read(null, $this->User->id);
+					$set_data = array(
+						'id' => $get_data['User']['id'],
+						'email' => $get_data['User']['email'],
+						'name' => $get_data['User']['name']
 					);
 					
-					if($this->Auth->login($latest_user_data)) {
+					if($this->Auth->login($set_data)) {
+
+						// Update last time login
+						$datenow = date("Y-m-d H:i:s");
+						$data = array(
+							'id' => $this->User->id,
+							'last_login_time' => $datenow
+						);
+						
+						if($this->User->save($data)) {
+							return $this->redirect($this->Auth->redirectUrl());
+						}
 
 						return $this->redirect(array('controller' => 'users', 'action' => 'thankyou'));
 					}
@@ -82,7 +89,7 @@ class UsersController extends AppController {
 
 	}
 
-	// Profile details page
+	// Profile Details
 	public function profile() {
 		
 		$userid = $this->Auth->user('id');
@@ -92,7 +99,7 @@ class UsersController extends AppController {
 		
 	}
 
-	// Profile form
+	// Profile Form
 	public function edit() {
 
 		$userid = $this->Auth->user('id');
@@ -102,6 +109,7 @@ class UsersController extends AppController {
 
 	}
 
+	// Edit Profile
 	public function editProfile() {
 		
 		$this->autoRender = false;
@@ -175,18 +183,19 @@ class UsersController extends AppController {
 
 	}
 
-	// Track old email
+	// Track Old Email
 	public function trackCurrentEmail($id, $email) {
 		$conditions = array("User.id" => $id, "User.email" => $email);
 		return  $this->User->find('count', array('conditions' => $conditions));
 	}
 	
-	// Track existing email
+	// Track Existing Email
 	public function trackExistingEmail($email) {
 		$conditions = array("User.email" => $email);
 		return  $this->User->find('count', array('conditions' => $conditions));
 	}
 
+	// Change Email
 	public function changeEmail() {
 		
 		$this->autoRender = false;
@@ -216,13 +225,14 @@ class UsersController extends AppController {
 		}
 	}
 
-	// Track old password
+	// Track Old Password
 	public function trackOldPassword($id, $old_password) {
 
 		$conditions = array("User.id" => $id, "User.password" => AuthComponent::password($old_password));
 		return $this->User->find('count', array('conditions' => $conditions));
 	}
 
+	// Change Password
 	public function changePassword() {
 
 		$this->autoRender = false;
