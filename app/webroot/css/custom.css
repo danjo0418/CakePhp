@@ -1,0 +1,17 @@
+body {
+    background-color: #ddd !important;
+}
+
+.vertical {
+    min-height: 80vh;
+}
+
+.error-message {
+    font-size: 0.8rem;
+    color: #ff0000;
+}
+
+#UserGenderMale, 
+#UserGenderFemale {
+    margin:5px;
+}
