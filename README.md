@@ -110,3 +110,9 @@ $('#profileUpdateForm').on('submit', function(e) {
 
 ## BOOTSTRAP TOASTR
 https://cdnjs.com/libraries/bootstrap-toaster/4.0.0
+
+
+## QUERY
+SELECT * FROM conversations WHERE sender_id = 2 OR recipient_id = 2;
+
+SELECT a.name, b.* FROM users a JOIN messages b ON a.id = b.sender_id  WHERE inbox_hash = 840334302023;
