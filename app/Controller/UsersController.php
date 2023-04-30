@@ -75,10 +75,8 @@ class UsersController extends AppController {
 						);
 						
 						if($this->User->save($data)) {
-							return $this->redirect($this->Auth->redirectUrl());
-						}
-
-						return $this->redirect(array('controller' => 'users', 'action' => 'thankyou'));
+							return $this->redirect(array('controller' => 'users', 'action' => 'thankyou'));
+						} 
 					}
 
 				} else $this->set('errors', $this->User->validationErrors);
@@ -101,29 +99,21 @@ class UsersController extends AppController {
 
 	// Profile Form
 	public function edit() {
+		
 
 		$userid = $this->Auth->user('id');
 		$user = $this->User->findById($userid);
-
 		$this->set('user', $user);
 
-	}
-
-	// Edit Profile
-	public function editProfile() {
-		
-		$this->autoRender = false;
 
 		if($this->request->is(array('post', 'put'))) {
 
-			$userid = $this->Auth->user('id');
 			$name = $this->request->data['User']['name'];
-			$birthdate = date("Y-m-d", strtotime($this->request->data['User']['birthdate']));
-			$gender = 'male';
+			$birthdate = date("Y-m-d", strtotime($this->request->data['Users']['birthdate']));
+			$gender = $this->request->data['User']['gender'];
 			$hubby = $this->request->data['User']['hubby'];
 			$ip = $this->request->clientIp();
 
-		
 			$input_img = $this->request->data['User']['image'];
 			$file_type = $input_img['type'];
 
@@ -139,10 +129,11 @@ class UsersController extends AppController {
 				);
 
 				if($this->User->save($data)) {
-							
-					$response = array('alert' => 'success', 'message' => 'Updated Successfuly');
+
+					$this->Session->setFlash('Updated Successfuly', 'default', array('class' => 'alert alert-success'));
+					return $this->redirect(array('controller' => 'users', 'action' => 'profile'));
 				
-				} else $response = array('alert' => 'error', 'message' => 'Unable to update user details');
+				} else $this->set('errors', $this->User->validationErrors);
 			
 			} else {
 
@@ -168,18 +159,17 @@ class UsersController extends AppController {
 	
 						if($this->User->save($data)) {
 							
-							$response = array('alert' => 'success', 'message' => 'Updated Successfuly');
+							$this->Session->setFlash('Updated Successfuly', 'default', array('class' => 'alert alert-success'));
+							return $this->redirect(array('controller' => 'users', 'action' => 'profile'));
 						
-						} else $response = array('alert' => 'error', 'message' => 'Unable to update user details');
+						} else $this->set('errors', $this->User->validationErrors);
 					}
 	
-				} else $response = array('alert' => 'error', 'message' => 'Invalid photo extension');		
-
+				} else $this->Session->setFlash('Invalid photo extension', 'default', array('class' => 'alert alert-success'));
 			}
-			
-			return json_encode($response);
 
 		} 
+
 
 	}
 

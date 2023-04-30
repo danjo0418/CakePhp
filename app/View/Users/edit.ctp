@@ -1,17 +1,18 @@
 <div class="row">
     <h3>Edit Profile</h3>
     <div class="col-12  p-3">
+        <div>
+            <?php echo $this->Session->flash(); ?>
+        </div>
         <div class="card">
             <div class="card-body">
-                <!-- <?php 
-                    echo $this->Form->create('Users', array(
-                            'controller' => 'users',
-                            'action' => 'editProfile',
-                            'type' => 'file'
-                        ));
-                ?> -->
-
-                <?php echo $this->Form->create(array('type' => 'file', 'id' => 'profileUpdateForm')); ?>
+                    <?php 
+                        echo $this->Form->create('User', array(
+                                'controller' => 'users',
+                                'action' => 'edit',
+                                'type' => 'file'
+                            ));
+                    ?>
                     <div class="row">
                         <div class="col-lg-3">
                             <?php 
@@ -60,8 +61,17 @@
                                 ?>
                             </div>
                             <div class="form-group">
-                                <label for="gender">Gender</label>
-                                
+                                <?php
+                                    $options = array(
+                                        'male' => 'Male',
+                                        'female' => 'Female'
+                                    );
+                            
+                                    echo $this->Form->radio('gender', $options, array(
+                                        'legend' => 'Gender',
+                                        'default' => $user['User']['gender']
+                                    ));
+                                ?>
                             </div>
                             <div class="form-group">
                                 <label for="gender">Hubby</label>
@@ -106,26 +116,6 @@
 
         $("#fileUpload").on('change', function(){
             fileReadURL(this);
-        });
-
-        $('#profileUpdateForm').on('submit', function(e) {
-            e.preventDefault(0);
-
-            $.ajax({
-                url:'<?php echo $this->Html->url(array('controller' => 'users', 'action' => 'editProfile')); ?>',
-                type:'POST',
-                dataType: 'json',
-                data: new FormData(this),
-                contentType:false,
-                cache:false,
-                processData:false,
-                success:function(response) {
-                   console.log(response.message);
-                },
-                error:function(error) {
-                    console.log(error);
-                }
-            });
         });
     });
 

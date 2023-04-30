@@ -1,6 +1,9 @@
 <div class="row">
     <h3>User Profile</h3>
     <div class="col-12  p-3">
+        <div>
+            <?php echo $this->Session->flash(); ?>
+        </div>
         <div class="card">
             <div class="card-body">
                 <div class="row">

@@ -31,7 +31,7 @@
                     'message' => 'Name is required field'
                 ),
                 'lengthBetween' => array(
-                    'rule' => array('lengthBetween', 5, 50),
+                    'rule' => array('lengthBetween', 5, 20),
                     'message' => 'Name must be 5 to 20 characters'
                 )
             ),
